@@ -1,0 +1,4 @@
+version = "latest-testing"
+
+[env]
+CREATE_HEAP_SIZE = "2g"

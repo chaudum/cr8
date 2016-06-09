@@ -1,0 +1,8 @@
+configurations = [
+    "latest-testing-2g.toml",
+    "latest-stable-2g.toml"
+]
+
+specs = [
+    "../specs/*.toml"
+]

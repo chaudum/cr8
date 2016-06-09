@@ -1,0 +1,4 @@
+[[queries]]
+statement = "select name from sys.cluster"
+iterations = 20000
+concurrency = 50

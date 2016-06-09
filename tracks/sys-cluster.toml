@@ -1,0 +1,29 @@
+[global]
+specs = [
+    "../specs/sys-cluster.toml"
+]
+
+
+[[tracks]]
+version = "0.54.9"
+
+    [tracks.env]
+    CRATE_HEAP_SIZE = "1g"
+
+[[tracks]]
+version = "0.54.9"
+
+    [tracks.env]
+    CRATE_HEAP_SIZE = "2g"
+
+[[tracks]]
+version = "0.54.9"
+
+    [tracks.env]
+    CRATE_HEAP_SIZE = "1g"
+
+[[tracks]]
+version = "0.55.0"
+
+    [tracks.env]
+    CRATE_HEAP_SIZE = "2g"

@@ -1,0 +1,4 @@
+version = "latest-stable"
+
+[env]
+CRATE_HEAP_SIZE = "2g"
