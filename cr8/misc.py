@@ -2,6 +2,8 @@
 
 from typing import Tuple, Iterator
 from collections import defaultdict
+import functools
+import bz2
 
 
 def parse_table(fq_table: str) -> Tuple[str, str]:
@@ -42,9 +44,13 @@ def as_bulk_queries(queries, bulk_size):
         yield stmt, bulk_args
 
 
-def get_lines(filename: str) -> Iterator[str]:
+def get_lines(uri: str) -> Iterator[str]:
     """Create an iterator that returns the lines of a utf-8 encoded file."""
-    with open(filename, 'r', encoding='utf-8') as f:
+    if uri.endswith('bz2'):
+        op = functools.partial(bz2.open, mode='rt', encoding='utf-8')
+    else:
+        op = functools.partial(open, mode='r', encoding='utf-8')
+    with op(uri) as f:
         for line in f:
             yield line
 

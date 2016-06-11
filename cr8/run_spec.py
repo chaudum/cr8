@@ -5,6 +5,9 @@ from time import time
 from functools import partial
 from pprint import pprint
 from crate.client import connect
+from urllib.request import urlopen
+from typing import Iterator
+import bz2
 
 from cr8 import aio
 from .insert_json import to_insert
@@ -13,6 +16,19 @@ from .timeit import QueryRunner, Result
 from .misc import as_bulk_queries, as_statements, get_lines
 from .metrics import Stats
 from .cli import dicts_from_lines, to_hosts
+
+
+def load_source(root: str, uri: str) -> Iterator[str]:
+    if not uri.startswith(('http://', 'https://')):
+        return get_lines(os.path.join(root, uri))
+
+    if uri.endswith('bz2'):
+        with bz2.open(urlopen(uri), mode='rt', encoding='utf-8') as f:
+            for line in f:
+                yield line
+    else:
+        with urlopen(uri) as r:
+            yield from r.readlines()
 
 
 class Executor:
@@ -39,8 +55,8 @@ class Executor:
 
     def _to_inserts(self, data_spec):
         target = data_spec['target']
-        source = os.path.join(self.spec_dir, data_spec['source'])
-        dicts = dicts_from_lines(get_lines(source))
+        source = data_spec['source']
+        dicts = dicts_from_lines(load_source(self.spec_dir, source))
         return (to_insert(target, d) for d in dicts)
 
     def exec_instructions(self, instructions):
