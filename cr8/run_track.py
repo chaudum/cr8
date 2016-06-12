@@ -21,16 +21,20 @@ class Executor:
     def _run_specs(self, specs, benchmark_host):
         specs = self._expand_paths(specs)
         for spec in specs:
-            print('Running spec file: ' + os.path.basename(spec))
+            print('### Running spec file: ', os.path.basename(spec))
             run_spec(spec, to_hosts(benchmark_host), self.result_hosts)
 
     def execute(self, track):
-        configurations = self._expand_paths(track['configurations'])
+        configurations = list(self._expand_paths(track['configurations']))
         versions = track['versions']
         for version in versions:
+            print('# Version: ', version)
             for c, configuration in enumerate(configurations):
+                print('## Starting Crate {0}, configuration: {1}'.format(
+                    os.path.basename(version),
+                    os.path.basename(configuration)
+                ))
                 configuration = toml.load(os.path.join(self.track_dir, configuration))
-                print('Starting Crate {}'.format(os.path.basename(version)))
                 crate_dir = get_crate(
                     version, self.crate_root or os.path.join(self.track_dir, 'crates'))
                 with CrateNode(crate_dir=crate_dir, env=configuration.get('env')) as node:
